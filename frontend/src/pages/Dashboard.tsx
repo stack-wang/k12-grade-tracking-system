@@ -90,8 +90,18 @@ export default function Dashboard() {
 
   const colors = ['#1677ff', '#52c41a', '#fa8c16', '#eb2f96', '#722ed1', '#13c2c2', '#faad14']
 
-  const handleExport = () => {
-    window.open('/api/exports/csv', '_blank')
+  const handleExport = async () => {
+    try {
+      const res = await api.get('/exports/csv', { responseType: 'blob' })
+      const url = URL.createObjectURL(res.data)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = '成绩表.csv'
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (err: any) {
+      // ignore
+    }
   }
 
   if (loading) return <Spin size="large" style={{ display: 'block', margin: '100px auto' }} />
